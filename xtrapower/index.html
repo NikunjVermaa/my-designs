@@ -6,7 +6,25 @@
 <meta name="theme-color" content="#E1231C">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<title>XtraPower Spare Parts</title>
 <style>
+/* Client-side access gate. Not real security - the credentials live in the
+   page source. Deters casual visitors, that's all. */
+#lockGate{position:fixed;inset:0;z-index:99999;background:#0B0B0B;color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;padding:24px;box-sizing:border-box}
+#lockGate.hidden{display:none}
+#lockGate h1{font-size:22px;font-weight:600;margin:0 0 6px;letter-spacing:.02em}
+#lockGate .sub{font-size:13px;color:#9A9A9A;margin-bottom:28px;text-align:center;line-height:1.5}
+#lockGate .box{width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px}
+#lockGate input{background:#181818;border:1px solid #333;color:#fff;padding:14px 14px;font-size:15px;
+  border-radius:4px;outline:none;font-family:inherit}
+#lockGate input:focus{border-color:#E1231C}
+#lockGate button{background:#E1231C;color:#fff;border:0;padding:14px;font-size:15px;font-weight:600;
+  border-radius:4px;cursor:pointer;font-family:inherit;margin-top:4px}
+#lockGate button:active{background:#B4151B}
+#lockGate .err{color:#FF8079;font-size:13px;text-align:center;min-height:18px}
+#lockGate .brand{position:absolute;top:24px;font-size:11px;letter-spacing:.15em;color:#666;text-transform:uppercase}
 html{color-scheme:light}
 body{margin:0;font-size:14px}
 img{max-width:100%}
@@ -872,6 +890,40 @@ body{overflow:hidden}
 </style>
 </head>
 <body>
+<div id="lockGate">
+  <div class="brand">XTRAPOWER · PREVIEW</div>
+  <h1>Restricted preview</h1>
+  <div class="sub">Enter the ID and password shared with you to open the wireframe.</div>
+  <form class="box" onsubmit="return checkGate(event)">
+    <input id="gateId" type="text" placeholder="ID" autocomplete="off" autofocus>
+    <input id="gatePw" type="password" placeholder="Password" autocomplete="off">
+    <button type="submit">Unlock</button>
+    <div class="err" id="gateErr">&nbsp;</div>
+  </form>
+</div>
+<script>
+(function(){
+  var GATE_ID = '123nikunj';
+  var GATE_PW = '123nikunj';
+  window.checkGate = function(e){
+    e.preventDefault();
+    var id = document.getElementById('gateId').value.trim();
+    var pw = document.getElementById('gatePw').value;
+    if(id === GATE_ID && pw === GATE_PW){
+      try { sessionStorage.setItem('xpt_unlocked','1'); } catch(_) {}
+      document.getElementById('lockGate').classList.add('hidden');
+    } else {
+      document.getElementById('gateErr').textContent = 'Wrong ID or password';
+    }
+    return false;
+  };
+  try {
+    if(sessionStorage.getItem('xpt_unlocked') === '1'){
+      document.getElementById('lockGate').classList.add('hidden');
+    }
+  } catch(_) {}
+})();
+</script>
 
 <svg class="sprite" aria-hidden="true"><defs>
 <linearGradient id="g-steel" x1="0" y1="0" x2="0" y2="1">
